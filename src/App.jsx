@@ -39,11 +39,6 @@ function App() {
     }
   }
 
-  // function errorMessage(message) {
-  //   setModalState(true)
-  //   return message;
-  // }
-
   return (
     <>
       <div className='input'>
