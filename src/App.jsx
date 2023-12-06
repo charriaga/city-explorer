@@ -18,16 +18,15 @@ function App() {
       const response = await axios.get(API);
       const locationObj = response.data[0];
       setLocation(locationObj);
-      if (response.ok) {
-        weatherReport(location);
-      }
-      if (!response.ok) { if (response.status === 401) {
+      if (response.status < 400) {
+        weatherReport();
+      } else if (response.status === 401) {
           h1Message('error');
-      } else {
+      } else  {
         console.error('Error: status of ', response.status);
         return;
       } }
-    } catch (error) {
+     catch (error) {
       console.error('Error: undefined');
     }
   }
@@ -46,7 +45,7 @@ function App() {
 
   async function weatherReport() {
     const API = 'http://localhost:5000';
-    const response = await axios.get(`${API}/weather?${location}`);
+    const response = await axios.get(`${API}/weather?query=${location.display_name}&lat=${location.lat}&lon=${location.lon}`);
     setForecast(response);
   }
 
