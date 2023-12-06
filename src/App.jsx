@@ -1,4 +1,5 @@
 import { useState } from 'react'
+// import WeatherReport from 'src/components/weatherReport'
 import axios from 'axios'
 import './App.css'
 
@@ -8,6 +9,7 @@ function App() {
 
   const [location, setLocation] = useState({ display_name: 'City' });
   const [searchQuery, setSearchQuery] = useState('');
+  const [forecast, setForecast] = useState({})
 
   //ChatGPT was consulted for this function
   async function fetchLocation() {
@@ -16,6 +18,9 @@ function App() {
       const response = await axios.get(API);
       const locationObj = response.data[0];
       setLocation(locationObj);
+      if (response.ok) {
+        weatherReport(location);
+      }
       if (!response.ok) { if (response.status === 401) {
           h1Message('error');
       } else {
@@ -39,10 +44,11 @@ function App() {
     }
   }
 
-  // function errorMessage(message) {
-  //   setModalState(true)
-  //   return message;
-  // }
+  async function weatherReport() {
+    const API = 'http://localhost:5000';
+    const response = await axios.get(`${API}/weather?${location}`);
+    setForecast(response);
+  }
 
   return (
     <>
@@ -53,6 +59,8 @@ function App() {
       <h1>{h1Message('fine')}</h1>
       <h2>{location.lat} latitude, {location.lon} longitute</h2>
       <img src={`https://maps.locationiq.com/v3/staticmap?key=${API_KEY}&center=${location.lat},${location.lon}&zoom=12&size=900x400&format=jpg&maptype=light/`} />
+      <p>{JSON.stringify(forecast)}</p>
+   
     </>
   )
 
