@@ -1,7 +1,7 @@
-import { useState } from 'react'
-// import WeatherReport from 'src/components/weatherReport'
-import axios from 'axios'
-import './App.css'
+import { useState } from 'react';
+import axios from 'axios';
+import './App.css';
+import Weather from './components/Weather.jsx';
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 
@@ -10,6 +10,7 @@ function App() {
   const [location, setLocation] = useState({ display_name: 'City' });
   const [searchQuery, setSearchQuery] = useState('');
   const [forecast, setForecast] = useState({})
+  const [weatherRender, setWeatherRender] = useState(false)
 
   //ChatGPT was consulted for this function
   async function fetchLocation() {
@@ -17,11 +18,13 @@ function App() {
     try {
       const response = await axios.get(API);
       const locationObj = response.data[0];
+      console.log(response.data);
       setLocation(locationObj);
-      if (response.ok) {
-        weatherReport(location);
+      if (response.status <400) {
+        console.log(location);
+        weatherReport(locationObj);
       }
-      if (!response.ok) { if (response.status === 401) {
+      if (response.status>=400) { if (response.status === 401) {
           h1Message('error');
       } else {
         console.error('Error: status of ', response.status);
@@ -44,10 +47,11 @@ function App() {
     }
   }
 
-  async function weatherReport() {
+  async function weatherReport(location) {
     const API = 'http://localhost:5000';
-    const response = await axios.get(`${API}/weather?${location}`);
+    const response = await axios.get(`${API}/weather?lat=${location.lat}&lon=${location.lon}`);
     setForecast(response);
+    setWeatherRender(true)
   }
 
   return (
@@ -59,7 +63,7 @@ function App() {
       <h1>{h1Message('fine')}</h1>
       <h2>{location.lat} latitude, {location.lon} longitute</h2>
       <img src={`https://maps.locationiq.com/v3/staticmap?key=${API_KEY}&center=${location.lat},${location.lon}&zoom=12&size=900x400&format=jpg&maptype=light/`} />
-      <p>{JSON.stringify(forecast)}</p>
+      <Weather show={weatherRender} src={forecast} />
    
     </>
   )
