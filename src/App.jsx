@@ -20,18 +20,16 @@ function App() {
       const locationObj = response.data[0];
       console.log(response.data);
       setLocation(locationObj);
-      if (response.status < 400) {
+      if (response.status <400) {
         console.log(location);
         weatherReport(locationObj);
       }
-      if (response.status >= 400) {
-        if (response.status === 401) {
+      if (response.status>=400) { if (response.status === 401) {
           h1Message('error');
-        } else {
-          console.error('Error: status of ', response.status);
-          return;
-        }
-      }
+      } else {
+        console.error('Error: status of ', response.status);
+        return;
+      } }
     } catch (error) {
       console.error('Error: undefined');
     }
@@ -41,7 +39,7 @@ function App() {
     setSearchQuery(event.target.value)
   }
 
-  function h1Message(parameter) {
+  function h1Message (parameter) {
     if (parameter === 'error') {
       return 'API INVALID';
     } else {
@@ -50,18 +48,11 @@ function App() {
   }
 
   async function weatherReport(location) {
-    // if (weatherRender) {
-    //   return;
-    // } else {
-      const API = 'http://localhost:5000';
-      try {
-        const response = await axios.get(`${API}/weather?lat=${location.lat}&lon=${location.lon}`);
-        setForecast(response);
-        setWeatherRender(true)
-      } catch (error) {
-        console.log('error:', error)
-      }
-    }
+    const API = 'http://localhost:5000';
+    const response = await axios.get(`${API}/weather?lat=${location.lat}&lon=${location.lon}`);
+    setForecast(response);
+    setWeatherRender(true)
+  }
 
   return (
     <>
@@ -72,8 +63,10 @@ function App() {
       <h1>{h1Message('fine')}</h1>
       <h2>{location.lat} latitude, {location.lon} longitute</h2>
       <img src={`https://maps.locationiq.com/v3/staticmap?key=${API_KEY}&center=${location.lat},${location.lon}&zoom=12&size=900x400&format=jpg&maptype=light/`} />
-      {weatherRender && <Weather src={forecast} />}
+      <Weather show={weatherRender} src={forecast} />
+   
     </>
   )
+
 }
 export default App
