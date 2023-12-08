@@ -4,24 +4,20 @@ import Card from "react-bootstrap/card";
 
 
 export default function Weather(props) {
-    console.log(props.src)
-    if (props.src.data !== undefined || null) {
+   const propsArr = Object.entries(props.src);
+    if (propsArr === undefined || null) {
         return (
-            <div>
-                {
-                    props.src.data.map((val => {
-                        return(
-                        <Card key={1}>
-                            <p>{val.date}</p>
-                            <p>{val.description}</p>
-                        </Card>
-                        )
-                    }))}
-            </div>
+            <p>undefined</p>
         );
     } else {
         return (
-            <p></p>
+            <div>
+                <Card key={1}>
+                    <p>{propsArr[1].date}</p>
+                    <p>{propsArr[1].description}</p>
+                </Card>
+
+            </div>
         )
     }
 }
